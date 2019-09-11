@@ -21,7 +21,7 @@ jobs:
     - name: Creating artifacts
       run: |
         mkdir artifacts
-        cp dist/mac/Retrowave\ Radio.app artifacts/
+        cp -r dist/mac/Retrowave\ Radio.app artifacts/
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
@@ -40,7 +40,7 @@ jobs:
     - name: Creating artifacts
       run: |
         mkdir artifacts
-        cp dist/win-unpacked artifacts/
+        cp -r dist/win-unpacked artifacts/
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
