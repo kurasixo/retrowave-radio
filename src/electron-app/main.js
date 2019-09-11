@@ -17,7 +17,6 @@ const createWindow = () => {
 
   subscribeToActions();
   registerShortcuts(win);
-  win.toggleDevTools();
 
   win.maximize();
   win.webContents.loadFile(path.join(__dirname, 'index.html'));
