@@ -1,5 +1,4 @@
 import React from 'react';
-// import { ipcRenderer } from 'electron';
 
 import Page from './Page/Page';
 

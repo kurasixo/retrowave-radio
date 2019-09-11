@@ -1,13 +1,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/react-app/index.js',
 
   mode: 'production',
 
   output: {
-    path: `${__dirname}/build`,
-    filename: 'bundle.js',
+    path: `${__dirname}/../build`,
+    filename: 'react-app.js',
   },
 
   externals: {

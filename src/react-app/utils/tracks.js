@@ -1,5 +1,15 @@
 import { originUrl, tracksUrl } from './urls';
 
+export const createTracksMap = (tracks) => {
+  const tracksMap = tracks.reduce((acc, item) => {
+    acc[item.id] = item;
+
+    return acc;
+  }, {});
+
+  return tracksMap;
+};
+
 export const getTracks = async () => {
   const tracksResp = await fetch(tracksUrl);
   const { body: { tracks: originTracks } } = await tracksResp.json();
@@ -12,11 +22,5 @@ export const getTracks = async () => {
   const activeTrackId = tracks[0].id;
   tracks[0].isInitial = true;
 
-  const tracksMap = tracks.reduce((acc, item) => {
-    acc[item.id] = item;
-
-    return acc;
-  }, {});
-
-  return { tracks, tracksMap, activeTrackId };
+  return { tracks, activeTrackId };
 };

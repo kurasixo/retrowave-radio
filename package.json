@@ -6,11 +6,16 @@
     "name": "Vadim Kurnakov"
   },
   "version": "0.1.0",
-  "main": "main.js",
+  "main": "./build/electron-app.js",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --color --progress",
+    "lint": "eslint .",
+    "build": "yarn build:react && yarn build:electron",
+    "build:react": "webpack --color --progress --config configs/react.webpack.config.js",
+    "build:electron": "webpack --color --progress --config configs/electron.webpack.config.js",
+
     "start": "yarn build && electron .",
+
     "preelectron-pack": "yarn build",
     "electron-pack": "electron-builder",
     "postinstall": "electron-builder install-app-deps"
@@ -25,10 +30,10 @@
       "target": "NSIS"
     },
     "files": [
-      "main.js",
       "build/**/*",
       "public/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "build/electron-app.js"
     ],
     "directories": {
       "buildResources": "assets"

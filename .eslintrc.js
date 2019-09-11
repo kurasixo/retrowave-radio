@@ -25,6 +25,8 @@ module.exports = {
     'no-underscore-dangle': 0,
     'react/state-in-constructor': 0,
     'import/prefer-default-export': 0,
+    'import/no-extraneous-dependencies': 0,
+    'arrow-body-style': 0,
     'react/jsx-props-no-spreading': 0,
     'operator-linebreak': 0,
     'react/jsx-filename-extension': 0,

@@ -4,8 +4,8 @@ import Player from '../Player/Player';
 import * as Misc from '../Misc';
 
 const PageView = ({
-  onClickNext,
-  onClickPrev,
+  onNext,
+  onPrev,
   activeTrack,
 }) => (
   <div
@@ -24,9 +24,9 @@ const PageView = ({
       </h1>
 
       <Player
+        onPrev={onPrev}
+        onNext={onNext}
         activeTrack={activeTrack}
-        onClickPrev={onClickPrev}
-        onClickNext={onClickNext}
       />
 
       <div className="display">

@@ -1,20 +1,22 @@
 import React from 'react';
 import { Howl, Howler } from 'howler';
-import throttle from 'lodash/throttle';
+
 import { ipcRenderer } from 'electron';
+
 import PlayerView from './PlayerView';
+import * as actionTypes from '../../common/actionTypes';
 
 class Player extends React.Component {
   state = { soundTrack: null, isPlaying: false };
 
   componentDidMount() {
     this.activateTrack();
-    const { onClickPrev, onClickNext } = this.props;
+    const { onPrev, onNext } = this.props;
 
-    ipcRenderer.on('TYPES/NEXT', throttle(onClickNext, 400));
-    ipcRenderer.on('TYPES/PREV', throttle(onClickPrev, 400));
+    ipcRenderer.on(actionTypes.NEXT, onNext);
+    ipcRenderer.on(actionTypes.PREV, onPrev);
 
-    ipcRenderer.on('TYPES/PLAY_PAUSE', () => {
+    ipcRenderer.on(actionTypes.PLAY_PAUSE, () => {
       const onClickPlay = this.getOnClickPlay();
       onClickPlay();
     });
@@ -24,7 +26,6 @@ class Player extends React.Component {
     { activeTrack: prevActiveTrack },
     { soundTrack: prevSoundTrack },
   ) {
-    const { soundTrack } = this.state;
     const { activeTrack } = this.props;
 
     if (prevActiveTrack.id !== activeTrack.id) {
@@ -48,11 +49,11 @@ class Player extends React.Component {
   }
 
   activateTrack = () => {
-    const { activeTrack, onClickNext } = this.props;
+    const { activeTrack, onNext } = this.props;
 
     const soundTrack = new Howl({
       preload: true,
-      onend: onClickNext,
+      onend: onNext,
       src: activeTrack.streamUrl,
       onload: () => this.onTrackLoad(soundTrack),
     });
@@ -88,18 +89,18 @@ class Player extends React.Component {
 
   render() {
     const { isPlaying } = this.state;
-    const { activeTrack: { artworkUrl }, onClickPrev, onClickNext } = this.props;
+    const { activeTrack: { artworkUrl }, onPrev, onNext } = this.props;
 
     // TODO: isInitialized -> true. spinner + blur + disable
     const onClickPlay = this.getOnClickPlay();
 
     return (
       <PlayerView
+        onClickPrev={onPrev}
+        onClickNext={onNext}
         isPlaying={isPlaying}
         artworkUrl={artworkUrl}
         onClickPlay={onClickPlay}
-        onClickPrev={onClickPrev}
-        onClickNext={onClickNext}
       />
     );
   }

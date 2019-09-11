@@ -11,7 +11,7 @@ const rangeStaticProps = {
 };
 
 class Volume extends React.Component {
-  state = { value: 50 };
+  state = { value: 50, prevValue: 50 };
 
   componentDidMount() {
     const { value } = this.state;
@@ -20,12 +20,20 @@ class Volume extends React.Component {
 
   onChange = (event) => {
     Howler.volume(event.target.value / 100);
-    this.setState({ value: event.target.value });
+    this.setState({ value: +event.target.value });
   }
 
   mute = () => {
+    const { value, prevValue } = this.state;
+
+    if (value === 0) {
+      this.setState({ value: prevValue });
+      Howler.volume(prevValue / 100);
+      return;
+    }
+
     Howler.volume(0);
-    this.setState({ value: 0 });
+    this.setState({ value: 0, prevValue: value });
   }
 
   render() {
