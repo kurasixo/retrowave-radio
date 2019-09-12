@@ -1,5 +1,5 @@
 import React from 'react';
-import { Howl, Howler } from 'howler';
+import { Howl } from 'howler';
 
 import { ipcRenderer } from 'electron';
 
@@ -7,19 +7,14 @@ import PlayerView from './PlayerView';
 import * as actionTypes from '../../common/actionTypes';
 
 class Player extends React.Component {
-  state = { soundTrack: null, isPlaying: false };
+  state = { soundTrack: null, isPlaying: false, isLoading: false };
 
   componentDidMount() {
     this.activateTrack();
-    const { onPrev, onNext } = this.props;
 
-    ipcRenderer.on(actionTypes.NEXT, onNext);
-    ipcRenderer.on(actionTypes.PREV, onPrev);
-
-    ipcRenderer.on(actionTypes.PLAY_PAUSE, () => {
-      const onClickPlay = this.getOnClickPlay();
-      onClickPlay();
-    });
+    ipcRenderer.on(actionTypes.NEXT, this.onNext);
+    ipcRenderer.on(actionTypes.PREV, this.onPrev);
+    ipcRenderer.on(actionTypes.PLAY_PAUSE, this.onPlayPause);
   }
 
   componentDidUpdate(
@@ -39,17 +34,17 @@ class Player extends React.Component {
 
   onTrackLoad = (soundTrack) => {
     soundTrack.play();
-    this.setState({ soundTrack, isPlaying: true });
+    this.setState({ soundTrack, isPlaying: true, isLoading: false });
   }
 
-  onTrackUnload = () => {
-    // TODO: refactor hatch
-    Howler.unload();
+  onTrackUnload = (prevSoundTrack) => {
+    prevSoundTrack.stop();
     this.setState({ isPlaying: false });
   }
 
   activateTrack = () => {
     const { activeTrack, onNext } = this.props;
+    this.setState({ isLoading: true, isPlaying: false });
 
     const soundTrack = new Howl({
       preload: true,
@@ -77,6 +72,30 @@ class Player extends React.Component {
     }
   };
 
+  onPlayPause = () => this.getOnClickPlay();
+
+  onPrev = () => {
+    const { onPrev } = this.props;
+    const { isLoading } = this.state;
+
+    if (isLoading) {
+      return;
+    }
+
+    onPrev();
+  }
+
+  onNext = () => {
+    const { onNext } = this.props;
+    const { isLoading } = this.state;
+
+    if (isLoading) {
+      return;
+    }
+
+    onNext();
+  }
+
   getOnClickPlay = () => {
     const { isPlaying } = this.state;
 
@@ -87,20 +106,39 @@ class Player extends React.Component {
     return onClickPlay;
   }
 
+  getCallbacks = () => {
+    const { isLoading } = this.state;
+    const { onNext, onPrev } = this.props;
+    const emptyCb = () => {};
+
+    if (isLoading) {
+      return {
+        onClickPrev: emptyCb,
+        onClickNext: emptyCb,
+        onClickPlay: emptyCb,
+      };
+    }
+
+    const onClickPlay = this.getOnClickPlay();
+
+    return {
+      onClickPlay,
+      onClickPrev: onPrev,
+      onClickNext: onNext,
+    };
+  }
+
   render() {
     const { isPlaying } = this.state;
-    const { activeTrack: { artworkUrl }, onPrev, onNext } = this.props;
+    const { activeTrack: { artworkUrl } } = this.props;
 
-    // TODO: isInitialized -> true. spinner + blur + disable
-    const onClickPlay = this.getOnClickPlay();
+    const callbackProps = this.getCallbacks();
 
     return (
       <PlayerView
-        onClickPrev={onPrev}
-        onClickNext={onNext}
+        {...callbackProps}
         isPlaying={isPlaying}
         artworkUrl={artworkUrl}
-        onClickPlay={onClickPlay}
       />
     );
   }

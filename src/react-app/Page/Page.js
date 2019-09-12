@@ -29,6 +29,7 @@ class Page extends React.Component {
 
   async componentDidMount() {
     await this.getTracksAndMapToState(this.setLoadingFalse);
+    this.sendNextNotification();
   }
 
   getTracksAndMapToState = async (setStateCallback = () => {}) => {
