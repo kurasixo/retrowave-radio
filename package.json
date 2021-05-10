@@ -43,7 +43,7 @@
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "howler": "^2.1.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "superagent": "^5.1.0"
